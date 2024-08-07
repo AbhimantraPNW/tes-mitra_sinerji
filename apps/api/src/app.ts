@@ -9,6 +9,9 @@ import express, {
 import cors from 'cors';
 import { PORT } from './config';
 import { SampleRouter } from './routers/sample.router';
+import { BarangRouter } from './routers/barang.router';
+import { CustomerRouter } from './routers/customer.router';
+import { TxRouter } from './routers/tx.router';
 
 export default class App {
   private app: Express;
@@ -51,12 +54,18 @@ export default class App {
 
   private routes(): void {
     const sampleRouter = new SampleRouter();
+    const barangRouter = new BarangRouter();
+    const customerRouter = new CustomerRouter();
+    const txRouter = new TxRouter();
 
     this.app.get('/api', (req: Request, res: Response) => {
       res.send(`Hello, Purwadhika Student !`);
     });
 
     this.app.use('/api/samples', sampleRouter.getRouter());
+    this.app.use('/api/barang', barangRouter.getRouter());
+    this.app.use('/api/customer', customerRouter.getRouter());
+    this.app.use('/api/tx', txRouter.getRouter());
   }
 
   public start(): void {

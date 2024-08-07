@@ -19,3 +19,62 @@ model Sample {
 
   @@map("samples") // if you want to use snake_case format
 }
+
+model Barang {
+  id        Int        @id @default(autoincrement())
+  kode      String
+  nama      String
+  harga     Decimal    @db.Decimal(10, 2)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  SalesDet  SalesDet[]
+
+  @@map("barang")
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  kode      String
+  name      String
+  telp      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  sales     Sales[]
+
+  @@map("customer")
+}
+
+model Sales {
+  id             Int        @id @default(autoincrement())
+  kode_transaksi String
+  tgl            DateTime
+  subtotal       Decimal?   @db.Decimal(10, 2)
+  diskon         Decimal?   @db.Decimal(10, 2)
+  ongkir         Decimal?   @db.Decimal(10, 2)
+  total_bayar    Decimal?   @db.Decimal(10, 2)
+  createdAt      DateTime   @default(now())
+  deletedAt      DateTime?
+  cust_id        Int
+  cust           Customer   @relation(fields: [cust_id], references: [id])
+  sales_detail   SalesDet[]
+
+  @@map("sales")
+}
+
+model SalesDet {
+  sales_id      Int
+  barang_id     Int
+  harga_bandrol Decimal  @db.Decimal(10, 2)
+  qty           Int
+  diskon_pct    Decimal? @db.Decimal(10, 2)
+  diskon_nilai  Decimal? @db.Decimal(10, 2)
+  harga_diskon  Decimal? @db.Decimal(10, 2)
+  total         Decimal  @db.Decimal(10, 2)
+  sales         Sales    @relation(fields: [sales_id], references: [id])
+  barang        Barang   @relation(fields: [barang_id], references: [id])
+
+  @@id([sales_id, barang_id])
+  @@map("sales_det")
+}
